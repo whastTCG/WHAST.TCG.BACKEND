@@ -16,7 +16,7 @@ const puerto= 3900;
 //configurar el cors
 
 app.use(cors({
-    origin:'http://localhost:3000',
+    origin: 'http://localhost:3000',
     credentials:true,
     
 }));
@@ -76,3 +76,5 @@ app.get("/" , (req, res) => {
 app.listen(puerto, () =>{
     console.log("servidor corriendo en el puerto: " + puerto);
 });
+
+//me actualice
