@@ -65,7 +65,7 @@ app.get("/" , (req, res) => {
 
     return res.status(200).send(
         `<div>
-             <h1>Empezando a crear una api rest con nodejs</h1>
+             <h1>Empezando a crear una api rest con nodejs actualizado</h1>
         </div>`
     );
 });
