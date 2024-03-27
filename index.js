@@ -2,6 +2,7 @@ const { connection } = require("./database/connection.js");
 const express = require("express");
 const cors = require("cors");
 const { setValorDolar} = require("./modelos/ValorDolar.js");
+require('dotenv').config(); 
 //inicializar app
 console.log("App de node arrancada");
 setValorDolar();
@@ -11,7 +12,7 @@ connection();
 
 //crear servidor node
 const app = express();
-const puerto= 3900;
+const puerto = process.env.PORT || 3900; // Usar el puerto proporcionado por Render o 3900 si no está definido
 
 //configurar el cors
 

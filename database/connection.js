@@ -1,10 +1,22 @@
 const mongoose = require("mongoose");
+require('dotenv').config(); // Importar y configurar dotenv
 
-const connection = async() => {
+const connection = async () => {
 
     try {
 
-        await mongoose.connect("mongodb://localhost:27017/CartasWhastTCG",{family:4});
+        await mongoose.connect(
+            //"mongodb+srv://whasttcg:qHn4gvZJ9V8jAWGF@cluster0.blxft2z.mongodb.net/CartasWhastTCG", 
+            process.env.MONGODB_URI,
+            
+            {
+                useNewUrlParser: true,
+               // createIndexes: true,
+                useUnifiedTopology: true,
+                family: 4
+                
+            }
+        );
 
         //se le debe pasar el family 4 en caso que te salga este error MongooseServerSelectionError: connect ECONNREFUSED ::1:27017
         // ya que el protocolo ipv6 no funcionma y al; usar family 4 fuerza a usar el ipv4
