@@ -16,8 +16,17 @@ const puerto = process.env.PORT || 3900; // Usar el puerto proporcionado por Ren
 
 //configurar el cors
 
+const allowedOrigins = ['https://web-whast-tcg.onrender.com', 'http://localhost:3000'];
+
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: function(origin, callback) {
+        // Verifica si el origen de la solicitud está en la lista de orígenes permitidos
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials:true,
     
 }));
