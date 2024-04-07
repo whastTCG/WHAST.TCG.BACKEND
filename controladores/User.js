@@ -95,7 +95,7 @@ const register = async (req, res) => {
 
         //cuando el usuario se guarde llamar al metodo para enviar el mail de verificacion a su correo
         //cambiar la ruta cuando entre en produccion por la del hosting
-        await verificarCuenta(userToSave.email, `http://localhost:3000/verificar-cuenta/${userToSave._id}`);
+        await verificarCuenta(userToSave.email, `http://www.lasttcgstore.com/verificar-cuenta/${userToSave._id}`);
 
         return res.status(200).send({
             status: "success",
