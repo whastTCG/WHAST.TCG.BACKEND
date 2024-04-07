@@ -2,7 +2,7 @@ const { connection } = require("./database/connection.js");
 const express = require("express");
 const cors = require("cors");
 const { setValorDolar} = require("./modelos/ValorDolar.js");
-require('dotenv').config(); 
+require('dotenv').config(); //exportar para las variables de entorno
 //inicializar app
 console.log("App de node arrancada");
 setValorDolar();
@@ -16,7 +16,7 @@ const puerto = process.env.PORT || 3900; // Usar el puerto proporcionado por Ren
 
 //configurar el cors
 
-const allowedOrigins = ['https://web-whast-tcg.onrender.com', 'http://localhost:3000'];
+const allowedOrigins = ['https://web-whast-tcg.onrender.com', 'http://localhost:3000','https://www.lasttcgstore.com'];
 
 app.use(cors({
     origin: function(origin, callback) {
