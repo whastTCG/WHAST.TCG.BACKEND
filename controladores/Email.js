@@ -94,7 +94,7 @@ const reenviarEMail = async (req, res) => {
         // Guardar los cambios en la base de datos
         await buscarUsuario.save();
 
-        await verificarCuenta(buscarUsuario.email, `http://localhost:3000/verificar-cuenta/${buscarUsuario._id}`);
+        await verificarCuenta(buscarUsuario.email, `http://www.lasttcgstore.com/verificar-cuenta/${buscarUsuario._id}`);
         return res.status(200).json({
             status: "success",
             message: "Correo de verificación reenviado correctamente",
