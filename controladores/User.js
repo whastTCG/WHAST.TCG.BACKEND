@@ -16,6 +16,9 @@ const cookie = require('cookie');
 const DatosPersonales = require('../modelos/DatosPersonales');
 const { listen } = require('express/lib/application');
 
+//metodo resned
+const { verificarCuenta } = require('../apiResend');
+
 //metodo de prueba
 
 const pruebaUsuario = (req, res) => {
@@ -89,6 +92,11 @@ const register = async (req, res) => {
             user: userToSave._id
         })
         await datosToSave.save();
+
+        //cuando el usuario se guarde llamar al metodo para enviar el mail de verificacion a su correo
+        //cambiar la ruta cuando entre en produccion por la del hosting
+        await verificarCuenta(userToSave.email, `http://localhost:3000/verificar-cuenta/${userToSave._id}`);
+
         return res.status(200).send({
             status: "success",
             message: "usuario registrado correctamente",
@@ -112,6 +120,7 @@ const login = async (req, res) => {
 
     //verificar si quiere ser recordada la sesion
     const remember = req.query.remember;
+
     //si se ingresa con los campos vacio enviar un mensaje
     if (!params.email || !params.password) {
         return res.status(400).send({
@@ -132,6 +141,9 @@ const login = async (req, res) => {
                 message: "no existe el usuario"
             });
         }
+
+    
+
         //comprobar su password con compareSync se compara el password que llega por parametro ( el que ingresa el usuario) vs
         //el que encontramos con la consulta de arriba que es el que esta en la bd en caso de que los mail coincidan
         const pwd = bcrypt.compareSync(params.password, userLogin.password);
@@ -142,6 +154,14 @@ const login = async (req, res) => {
                 message: "password incorrecto"
             });
         }
+
+            //verificar si la cuenta esta verificada
+            if (!userLogin.verifie) {
+                return res.status(403).send({
+                    status: "no verificado",
+                    message: "la cuenta no esta verificada. Por favor, verificar su cuenta antes de iniciar sesion."
+                })
+            }
 
         //si es correcta devolvemos el token 
         const token = jwt.createToken(userLogin);
@@ -292,7 +312,7 @@ const update = async (req, res) => {
         validarUser(userToUpdate)
 
         //comprobar si el correo viene bien
-        if (!isValidEmail(userToUpdate.email) ) {
+        if (!isValidEmail(userToUpdate.email)) {
             return res.status(400).send({
                 message: "correo invalido",
                 status: "error"
@@ -365,7 +385,7 @@ const updatePassword = async (req, res) => {
 
 
     try {
-    
+
         validarPassowrd(newPass)
         try {
 

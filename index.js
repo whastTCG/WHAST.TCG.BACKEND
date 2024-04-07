@@ -44,6 +44,7 @@ const rutas_Carta =  require("./rutas/Carta.js");
 const rutas_User = require("./rutas/User.js");
 const rutas_DatosPersonales = require("./rutas/DatosPersonales.js");
 const rutas_DatosEnvio = require("./rutas/DatosEnvio.js");
+const rutas_envio_email = require("./rutas/Email.js");
 //cargar las rutas
 app.use("/BLMR", rutas_BLMR);
 app.use("/otros", rutas_Otros);
@@ -51,6 +52,7 @@ app.use("/carta", rutas_Carta);
 app.use("/user", rutas_User);
 app.use("/datos-personales", rutas_DatosPersonales);
 app.use("/datos-envio", rutas_DatosEnvio);
+app.use("/email", rutas_envio_email);
 //rutas harcoreada pruebas
 app.get("/probando" , (req, res) => {
 

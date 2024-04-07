@@ -32,6 +32,14 @@ const UserSchema = Schema({
         type: Date,
         default: Date.now
     },
+    verifie:{
+        type: Boolean, 
+        default: false
+    },
+    fechaExpiracionEnlace: {
+        type: Date,
+        default: () => Date.now() + (48  * 60 * 60 * 1000) // Por ejemplo, 48 horas a partir de la fecha actual
+    },
   
 });
 
