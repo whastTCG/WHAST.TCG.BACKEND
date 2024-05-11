@@ -115,8 +115,4 @@ module.exports = {
     pruebaEmail,
     verificarUsuario,
     reenviarEMail
-}
-<<<<<<< HEAD
-
-=======
->>>>>>> feac92635392779dd75d9caa6228d32cc7500c2c
+};
