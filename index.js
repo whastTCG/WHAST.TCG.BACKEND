@@ -1,7 +1,10 @@
 const { connection } = require("./database/connection.js");
 const express = require("express");
 const cors = require("cors");
+//cargar valor del dolar en la base de datos
 const { setValorDolar} = require("./modelos/ValorDolar.js");
+
+
 require('dotenv').config(); //exportar para las variables de entorno
 //inicializar app
 console.log("App de node arrancada");
@@ -45,6 +48,9 @@ const rutas_User = require("./rutas/User.js");
 const rutas_DatosPersonales = require("./rutas/DatosPersonales.js");
 const rutas_DatosEnvio = require("./rutas/DatosEnvio.js");
 const rutas_envio_email = require("./rutas/Email.js");
+const rutas_venta = require("./rutas/Venta.js");
+const rutas_envio_no_registrado = require("./rutas/EnvioNoRegistrado.js");
+
 //cargar las rutas
 app.use("/BLMR", rutas_BLMR);
 app.use("/otros", rutas_Otros);
@@ -53,6 +59,8 @@ app.use("/user", rutas_User);
 app.use("/datos-personales", rutas_DatosPersonales);
 app.use("/datos-envio", rutas_DatosEnvio);
 app.use("/email", rutas_envio_email);
+app.use("/venta", rutas_venta);
+app.use("/envio-no-registrado", rutas_envio_no_registrado);
 //rutas harcoreada pruebas
 app.get("/probando" , (req, res) => {
 

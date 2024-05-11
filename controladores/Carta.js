@@ -367,14 +367,14 @@ const Actualizar = async (req, res) => {
         return res.status(200).json({
             status: "succes",
             artuculo: consulta,
-            mensaje: "estoy squi loquito"
+            mensaje: "Carta Actualizada"
         })
 
     } catch (error) {
         return res.status(404).json({
             status: "error",
             id: id,
-            mensaje: "no se encontro tu wea"
+            mensaje: "error al ejecutar la funcion Actualizar Carta"
         })
     }
 

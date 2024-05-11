@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 require('dotenv').config(); // Importar y configurar dotenv
-
+//importar metodo para verificar cuentas no pagadas dentro de 24 horas
+const { verificarVentasNoPagadas } = require("../controladores/Helper/verificarVentasNoPagadas");
 const connection = async () => {
 
     try {
@@ -26,7 +27,7 @@ const connection = async () => {
         //useCreateIndex: true
 
         console.log("Conectado Correctamente a la base de datos CartasWgastTCG");
-
+        verificarVentasNoPagadas();
     } catch (error) {
         console.log(error)
         throw new Error(" no se ha podido conectar a la base de datos ");

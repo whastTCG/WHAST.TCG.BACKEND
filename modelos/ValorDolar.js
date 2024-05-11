@@ -20,7 +20,7 @@ const setValorDolar = async() =>{
         _valorDolar = data.rates.CLP;
         console.log(_valorDolar);
     } catch (error) {
-        
+        console.error(error);
     }
 }
 

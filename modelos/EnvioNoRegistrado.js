@@ -1,6 +1,13 @@
 const { Schema, model } = require("mongoose");
 
-const DatosEnvioSchema = new Schema({
+const EnvioNoRegistradoSchema = new Schema({
+
+    venta: {
+        type: Schema.Types.ObjectId,
+        ref: "venta",
+        required: true
+    },
+
     direccion: {
         type: String,
         default: "NA"
@@ -30,10 +37,8 @@ const DatosEnvioSchema = new Schema({
         type: String,
         default: "Chile"
     },
-    user: {
-        type: Schema.ObjectId,
-        ref: "User"
-    },
+
+
     telefono: {
         type: String,
         default: "000000000"
@@ -43,21 +48,28 @@ const DatosEnvioSchema = new Schema({
         default: "00000000"
     },
 
-    // Campos adicionales para la casilla de correo
-    nombreCasilla: {
-        type: String,
-        default: "NA"
-    },
-    direccionCasilla: {
-        type: String,
-        default: "NA"
-    },
-    entregaADomicilio: {
+    entregaPresencial: {
         type: Boolean,
         default: false
+    },
+    casillaCorreo: {
+        type: String,
+        required: true,
+        default: "Starken"
+    },
+
+    direccionSucursal: {
+        type: String,
+        required: true,
+        default: ""
+    },
+    email: {
+        type: String,
+        required: true,
+        default: ""
     }
 
 
 })
 
-module.exports = model("DatosEnvio", DatosEnvioSchema, "datosEnvio");
+module.exports = model("EnvioNoRegistrado", EnvioNoRegistradoSchema, "envioNoRegistrado");

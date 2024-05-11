@@ -1,11 +1,14 @@
-const {Schema, model} = require("mongoose");
+const { Schema, model } = require("mongoose");
 
 const UserSchema = Schema({
     name: {
         type: String,
         required: true
     },
-    surname:String,
+    surname: {
+        type: String,
+        required: true
+    },
     bio: String,
     nick: {
         type: String,
@@ -13,34 +16,43 @@ const UserSchema = Schema({
     },
     email: {
         type: String,
-        required:true
+        required: true
     },
 
     password: {
         type: String,
-        required:true
+        required: true
     },
-    roll:{
-        type:String,
+    roll: {
+        type: String,
         default: "role_user"
     },
     image: {
-        type:String,
+        type: String,
         default: "default.png"
     },
     created_at: {
         type: Date,
         default: Date.now
     },
-    verifie:{
-        type: Boolean, 
+    verifie: {
+        type: Boolean,
         default: false
     },
     fechaExpiracionEnlace: {
         type: Date,
-        default: () => Date.now() + (48  * 60 * 60 * 1000) // Por ejemplo, 48 horas a partir de la fecha actual
+        default: () => Date.now() + (48 * 60 * 60 * 1000) // Por ejemplo, 48 horas a partir de la fecha actual
     },
-  
+
+    resetContrasenaToken: {
+        type: String,
+        default: null
+    },
+    resetPasswordExpires: {
+        type: Date,
+        default: null
+    }
+
 });
 
 module.exports = model("User", UserSchema, "users");

@@ -17,9 +17,13 @@ const DatosPersonales = require('../modelos/DatosPersonales');
 const { listen } = require('express/lib/application');
 
 //metodo resned
-const { verificarCuenta } = require('../apiResend');
+const { verificarCuenta, recuperarContraseñaEmail, recuperarContraseñaEmailToken } = require('../apiResend');
 
+//metodo para generar caracteres random ( para generar un password random)
+const { generateRandomPassword } = require('../controladores/Helper/generarRandom');
 //metodo de prueba
+
+const crypto = require('crypto');
 
 const pruebaUsuario = (req, res) => {
     return res.status(200).send({
@@ -142,7 +146,7 @@ const login = async (req, res) => {
             });
         }
 
-    
+
 
         //comprobar su password con compareSync se compara el password que llega por parametro ( el que ingresa el usuario) vs
         //el que encontramos con la consulta de arriba que es el que esta en la bd en caso de que los mail coincidan
@@ -155,13 +159,13 @@ const login = async (req, res) => {
             });
         }
 
-            //verificar si la cuenta esta verificada
-            if (!userLogin.verifie) {
-                return res.status(403).send({
-                    status: "no verificado",
-                    message: "la cuenta no esta verificada. Por favor, verificar su cuenta antes de iniciar sesion."
-                })
-            }
+        //verificar si la cuenta esta verificada
+        if (!userLogin.verifie) {
+            return res.status(403).send({
+                status: "no verificado",
+                message: "la cuenta no esta verificada. Por favor, verificar su cuenta antes de iniciar sesion."
+            })
+        }
 
         //si es correcta devolvemos el token 
         const token = jwt.createToken(userLogin);
@@ -424,16 +428,137 @@ const updatePassword = async (req, res) => {
     }
 
 
+}
+
+const recuperarContraseña = async (req, res) => {
+
+    let queryEmail = req.query.email;
 
 
+    try {
 
-    return res.status(200).send({
-        status: "success",
-        message: "end point cambiar password"
-    })
+        const nuevaContrasena = generateRandomPassword()
+
+        const buscarUsuario = await User.findOne({ email: queryEmail });
+
+        if (!buscarUsuario) {
+            return res.status(404).send({
+                status: "error",
+                message: "usuario no encontrado"
+            })
+        }
+        //cifrar password
+        let pwd;
+
+        try {
+
+            pwd = await bcrypt.hash(nuevaContrasena, 10);
+
+        } catch (error) {
+
+            return res.status(400).json(
+                {
+                    status: "error",
+                    message: 'Error al cifrar la contraseña',
+                    error: error
+                });
+        }
+
+        buscarUsuario.password = pwd;
+
+        await buscarUsuario.save();
+
+        await recuperarContraseñaEmail(queryEmail, nuevaContrasena);
+
+        return res.status(200).send({
+            status: "success",
+            message: "contrasena cambiada correctamente",
+            nuevoPass: nuevaContrasena
+        })
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            status: "error",
+            message: 'error al ejecutar la funcion',
+
+        });
+    }
+}
+
+const recuperarContrasenaToken = async (req, res) => {
+
+    let queryEmail = req.query.email;
+
+    try {
+
+        const usuario = await User.findOne({ email: queryEmail });
+
+        if (!usuario) {
+            return res.status(404).send({
+                status: "error",
+                message: "usuario no encontrado"
+            });
+        }
+
+        //generar un token unico
+        const token = crypto.randomBytes(20).toString('hex');
+        usuario.resetContrasenaToken = token;
+        usuario.resetPasswordExpires = Date.now() + 3600000; // 1 hora de expiracion
+
+        await usuario.save();
+
+        // enviar al correo electronico de recuperacion
+        await recuperarContraseñaEmailToken(queryEmail, token);
+        return res.status(200).send({
+            status: "success",
+            message: "correo de recuperacion enviado",
+        })
+
+    } catch (error) {
+        console.error(error);
+
+        return res.status(500).json({
+            status: "error",
+            message: "error al ejecutar la funcion"
+        })
+    }
 }
 
 
+const updatearContrasenaToken = async (req, res) => {
+
+    const { email, token, contrasena } = req.body;
+   // console.log(email);
+    //console.log(token);
+    //console.log(contrasena);
+
+    try {
+        const usuario = await User.findOne({ email: email, resetContrasenaToken: token, resetPasswordExpires: { $gt: Date.now() } });
+        console.log(usuario)
+
+        if (!usuario) {
+            return res.status(400).json({ status: 'error', message: 'Token inválido o expirado' });
+        }
+        if (contrasena.length<=3 ) {
+            return res.status(400).json({ status: 'error', message: 'password debe ser mayor a 3 caracteres' });
+
+        }
+        const pwd = await bcrypt.hash(contrasena, 10);
+        usuario.password = pwd;
+        usuario.recuperarContrasenaToken = null;
+        usuario.resetPasswordExpires = null;
+
+        await usuario.save();
+
+        return res.status(200).json({ status: 'success', message: 'Contraseña actualizada correctamente' });
+
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({status:"Error", message: 'Error al actualizar la contraseña' });
+    }
+}
 
 
 
@@ -445,6 +570,9 @@ module.exports = {
     cleanCookies,
     obtenerCookie,
     update,
-    updatePassword
+    updatePassword,
+    recuperarContraseña,
+    recuperarContrasenaToken,
+    updatearContrasenaToken
 
 };

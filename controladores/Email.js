@@ -4,6 +4,7 @@ const jwt = require("../services/token/jwt");
 const User = require('../modelos/User');
 
 const { verificarCuenta } = require('../apiResend');
+
 const pruebaEmail = (req, res) => {
     return res.status(200).send({
         status: "success",
@@ -115,3 +116,4 @@ module.exports = {
     verificarUsuario,
     reenviarEMail
 }
+
